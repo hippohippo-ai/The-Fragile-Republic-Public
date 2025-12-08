@@ -46,13 +46,13 @@
       }
     </script>
     <style>
-      /* --- [关键] 基础全屏锁定 --- */
+      /* --- 基础全屏锁定 --- */
       html, body, #root {
         height: 100%;
         width: 100%;
         margin: 0;
         padding: 0;
-        overflow: hidden; /* 禁止浏览器默认滚动条 */
+        overflow: hidden;
       }
 
       body {
@@ -63,17 +63,27 @@
 
       /* CRT Effects */
       .crt-mode {
-        text-shadow: 0 0 2px rgba(0, 255, 65, 0.6), 0 0 8px rgba(0, 255, 65, 0.4);
+        /* [优化] 极轻微的辉光，保证文字锐利度 */
+        text-shadow: 0 0 1px rgba(0, 255, 65, 0.4); 
       }
 
       .crt-mode #root {
+        /* [优化] 加大圆角 (2rem)，让屏幕边缘的“形变区域”看起来更大，更像显像管 */
+        border-radius: 2rem; 
+        
+        /* 保持之前的形变动画 */
         animation: flicker 0.15s infinite, screen-warp 10s infinite;
         transform-origin: center;
         will-change: transform, filter;
+        overflow: hidden;
+        
+        /* 给一点内边距，防止圆角把内容切掉太多 */
+        padding: 4px; 
       }
 
-      .crt-mode h1, .crt-mode h2, .crt-mode .font-bold {
-        animation: chromatic 4s infinite alternate;
+      /* [优化] 只让大标题有轻微色差，正文完全移除色差以保证清晰 */
+      .crt-mode h1, .crt-mode h2 {
+        animation: chromatic 8s infinite alternate; 
       }
 
       .crt-scanlines {
@@ -81,8 +91,8 @@
           to bottom,
           rgba(0, 0, 0, 0) 0px,
           rgba(0, 0, 0, 0) 2px,
-          rgba(0, 0, 0, 0.3) 2px,
-          rgba(0, 0, 0, 0.3) 4px
+          rgba(0, 0, 0, 0.15) 2px, /* 进一步减淡扫描线，减少对视线的干扰 */
+          rgba(0, 0, 0, 0.15) 4px
         );
         background-size: 100% 4px;
         position: fixed;
@@ -93,10 +103,10 @@
 
       .crt-scanning-line {
         position: fixed;
-        top: 0; left: 0; width: 100%; height: 10px;
+        top: 0; left: 0; width: 100%; height: 8px; /* 扫描线稍微变宽 */
         background: linear-gradient(to bottom, transparent, rgba(0, 255, 65, 0.3), transparent);
-        opacity: 0.5;
-        animation: scanline-move 6s linear infinite;
+        opacity: 0.3;
+        animation: scanline-move 8s linear infinite;
         pointer-events: none;
         z-index: 42;
       }
@@ -106,8 +116,9 @@
         pointer-events: none;
         top: 0; right: 0; bottom: 0; left: 0;
         z-index: 41;
-        background: radial-gradient(circle, rgba(0,0,0,0) 75%, rgba(0,0,0,0.4) 100%);
-        box-shadow: inset 0 0 5rem rgba(0,0,0,0.2);
+        /* [优化] 保持之前的调整，减少暗角范围，避免遮挡角落文字 */
+        background: radial-gradient(circle, rgba(0,0,0,0) 85%, rgba(0,0,0,0.3) 100%);
+        box-shadow: inset 0 0 1rem rgba(0,0,0,0.1);
       }
 
       /* =========================================
@@ -137,7 +148,7 @@
         top: 0; left: 0; right: 0; bottom: 0;
         z-index: 45;
         pointer-events: none;
-        box-shadow: inset 0 0 100px rgba(185, 28, 28, 0.6);
+        box-shadow: inset 0 0 100px rgba(185, 28, 28, 0.4);
         animation: red-pulse 3s ease-in-out infinite;
         mix-blend-mode: overlay;
       }
@@ -146,7 +157,7 @@
       .war-mode-active .border-green-600,
       .war-mode-active .border-current {
         border-color: #ef4444 !important;
-        box-shadow: 0 0 10px rgba(239, 68, 68, 0.3), inset 0 0 5px rgba(239, 68, 68, 0.1) !important;
+        box-shadow: 0 0 8px rgba(239, 68, 68, 0.3) !important;
         animation: border-flicker 4s infinite;
       }
 
@@ -154,7 +165,7 @@
       .war-mode-active .text-green-400,
       .war-mode-active .text-green-500 {
         color: #ef4444 !important;
-        text-shadow: 0 0 4px rgba(220, 38, 38, 0.6) !important;
+        text-shadow: 0 0 2px rgba(220, 38, 38, 0.5) !important;
       }
 
       .war-mode-active .bg-terminal-green {
@@ -173,13 +184,37 @@
         filter: none !important;
       }
 
+      /* Animations */
       @keyframes bg-scroll { 0% { transform: translateY(0); } 100% { transform: translateY(150px); } }
-      @keyframes red-pulse { 0% { box-shadow: inset 0 0 50px rgba(185, 28, 28, 0.3); opacity: 0.8; } 50% { box-shadow: inset 0 0 150px rgba(220, 38, 38, 0.6); opacity: 1; } 100% { box-shadow: inset 0 0 50px rgba(185, 28, 28, 0.3); opacity: 0.8; } }
+      @keyframes red-pulse { 0% { box-shadow: inset 0 0 50px rgba(185, 28, 28, 0.3); opacity: 0.8; } 50% { box-shadow: inset 0 0 100px rgba(220, 38, 38, 0.5); opacity: 1; } 100% { box-shadow: inset 0 0 50px rgba(185, 28, 28, 0.3); opacity: 0.8; } }
       @keyframes border-flicker { 0%, 96%, 98% { border-color: #ef4444; opacity: 1; } 97% { border-color: #7f1d1d; opacity: 0.8; } 99% { border-color: #fff; opacity: 1; } }
-      @keyframes flicker { 0% { opacity: 0.97; } 50% { opacity: 1; } 100% { opacity: 0.98; } }
+
+      @keyframes flicker { 0% { opacity: 0.98; } 50% { opacity: 1; } 100% { opacity: 0.99; } }
       @keyframes scanline-move { 0% { top: -10%; opacity: 0; } 5% { opacity: 0.5; } 90% { opacity: 0.5; } 100% { top: 110%; opacity: 0; } }
-      @keyframes screen-warp { 0% { transform: scale(1) skew(0deg); } 90% { transform: scale(1) skew(0deg); } 91% { transform: scale(1.01, 0.99) skew(0.5deg); } 92% { transform: scale(0.99, 1.01) skew(-0.5deg); } 93% { transform: scale(1) skew(0deg); } 100% { transform: scale(1) skew(0deg); } }
-      @keyframes chromatic { 0% { text-shadow: 1px 0 0 rgba(255,0,0,0.4), -1px 0 0 rgba(0,0,255,0.4); } 100% { text-shadow: -1px 0 0 rgba(255,0,0,0.4), 1px 0 0 rgba(0,0,255,0.4); } }
+      
+      /* [优化] 增强版形变动画：拉伸(Scale)幅度更大，扭曲(Skew)角度更大 */
+      @keyframes screen-warp { 
+        0% { transform: scale(1) skew(0deg); } 
+        
+        /* 增加随机的小幅抖动 */
+        30% { transform: scale(1.005, 0.995) skew(0.5deg); }
+        60% { transform: scale(0.995, 1.005) skew(-0.5deg); }
+        
+        /* 结尾的大幅扭曲 */
+        90% { transform: scale(1) skew(0deg); } 
+        91% { transform: scale(1.04, 0.96) skew(3deg); } /* 拉伸更宽，倾斜更大 */
+        92% { transform: scale(0.96, 1.04) skew(-3deg); } 
+        93% { transform: scale(1.02, 0.98) skew(2deg); } 
+        94% { transform: scale(0.98, 1.02) skew(-2deg); }
+        95% { transform: scale(1.01, 0.99) skew(1deg); } 
+        100% { transform: scale(1) skew(0deg); } 
+      }
+
+      /* [优化] 极轻微的色差，仅在标题使用，避免正文模糊 */
+      @keyframes chromatic { 
+        0% { text-shadow: 0.5px 0 0 rgba(255,0,0,0.2), -0.5px 0 0 rgba(0,0,255,0.2); } 
+        100% { text-shadow: -0.5px 0 0 rgba(255,0,0,0.2), 0.5px 0 0 rgba(0,0,255,0.2); } 
+      }
 
       ::-webkit-scrollbar { width: 8px; }
       ::-webkit-scrollbar-track { background: #001100; }
@@ -196,7 +231,7 @@
       }
     }
     </script>
-  <script type="module" crossorigin src="./assets/index-CIav66GE.js"></script>
+  <script type="module" crossorigin src="./assets/index-CLsycLSK.js"></script>
 </head>
 <body>
     <div id="root"></div>
