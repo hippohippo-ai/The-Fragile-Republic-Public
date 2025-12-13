@@ -28,7 +28,6 @@
                 dimGreen: '#008f11',
                 red: '#ff0000',
                 amber: '#ffb000',
-                scanline: 'rgba(18, 16, 16, 0.5)',
               }
             },
             animation: {
@@ -46,181 +45,114 @@
       }
     </script>
     <style>
-      /* --- 基础全屏锁定 --- */
+      /* --- 基础设置 --- */
+      html {
+        /* 全局字体放大 */
+        font-size: 18px; 
+      }
+
       html, body, #root {
         height: 100%;
         width: 100%;
         margin: 0;
         padding: 0;
         overflow: hidden;
-      }
-
-      body {
-        background-color: #050505;
+        background-color: #000;
         color: #00ff41;
-        transition: background-color 1s ease;
+        /* 恢复默认字体栈，让 Tailwind 发挥作用 */
+        /* 禁止移动端双击缩放 */
+        touch-action: manipulation; 
+        -webkit-user-select: none;
+        user-select: none;
       }
 
-      /* CRT Effects */
+      /* --- 工具类 --- */
+      .scrollbar-hide::-webkit-scrollbar { display: none; }
+      .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+      .mask-fade-right {
+        -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
+        mask-image: linear-gradient(to right, black 85%, transparent 100%);
+      }
+
+      .pb-safe {
+        padding-bottom: env(safe-area-inset-bottom, 20px);
+      }
+
+      /* --- CRT 视觉风格 --- */
       .crt-mode {
-        /* [优化] 极轻微的辉光，保证文字锐利度 */
-        text-shadow: 0 0 1px rgba(0, 255, 65, 0.4); 
+        text-shadow: 0 0 2px rgba(0, 255, 65, 0.4);
       }
 
       .crt-mode #root {
-        /* [优化] 加大圆角 (2rem)，让屏幕边缘的“形变区域”看起来更大，更像显像管 */
-        border-radius: 2rem; 
-        
-        /* 保持之前的形变动画 */
-        animation: flicker 0.15s infinite, screen-warp 10s infinite;
-        transform-origin: center;
-        will-change: transform, filter;
-        overflow: hidden;
-        
-        /* 给一点内边距，防止圆角把内容切掉太多 */
-        padding: 4px; 
-      }
-
-      /* [优化] 只让大标题有轻微色差，正文完全移除色差以保证清晰 */
-      .crt-mode h1, .crt-mode h2 {
-        animation: chromatic 8s infinite alternate; 
+        background: radial-gradient(circle at center, #111 0%, #000 130%);
+        box-shadow: inset 0 0 80px rgba(0,0,0,0.9);
+        animation: flicker 0.15s infinite;
+        position: relative;
+        z-index: 1;
       }
 
       .crt-scanlines {
-        background: repeating-linear-gradient(
+        background: linear-gradient(
           to bottom,
-          rgba(0, 0, 0, 0) 0px,
-          rgba(0, 0, 0, 0) 2px,
-          rgba(0, 0, 0, 0.15) 2px, /* 进一步减淡扫描线，减少对视线的干扰 */
-          rgba(0, 0, 0, 0.15) 4px
+          rgba(255,255,255,0),
+          rgba(255,255,255,0) 50%,
+          rgba(0,0,0,0.15) 50%,
+          rgba(0,0,0,0.15)
         );
         background-size: 100% 4px;
         position: fixed;
         pointer-events: none;
-        top: 0; right: 0; bottom: 0; left: 0;
-        z-index: 40;
+        top: 0; left: 0; right: 0; bottom: 0;
+        z-index: 99;
+        mix-blend-mode: overlay;
       }
 
       .crt-scanning-line {
         position: fixed;
-        top: 0; left: 0; width: 100%; height: 8px; /* 扫描线稍微变宽 */
-        background: linear-gradient(to bottom, transparent, rgba(0, 255, 65, 0.3), transparent);
-        opacity: 0.3;
-        animation: scanline-move 8s linear infinite;
+        top: 0; left: 0; width: 100%; height: 4px;
+        background: rgba(0, 255, 65, 0.3);
+        opacity: 0.1;
+        animation: scanline-move 6s linear infinite;
         pointer-events: none;
-        z-index: 42;
+        z-index: 100;
+        box-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
       }
 
       .crt-vignette {
         position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        z-index: 98;
+        background: radial-gradient(circle, rgba(0,0,0,0) 60%, rgba(0,0,0,0.5) 100%);
         pointer-events: none;
-        top: 0; right: 0; bottom: 0; left: 0;
-        z-index: 41;
-        /* [优化] 保持之前的调整，减少暗角范围，避免遮挡角落文字 */
-        background: radial-gradient(circle, rgba(0,0,0,0) 85%, rgba(0,0,0,0.3) 100%);
-        box-shadow: inset 0 0 1rem rgba(0,0,0,0.1);
       }
 
-      /* =========================================
-         WAR MODE OVERRIDES
-         ========================================= */
+      @keyframes flicker { 
+        0% { opacity: 0.97; } 50% { opacity: 1; } 100% { opacity: 0.98; } 
+      }
+      
+      @keyframes scanline-move { 
+        0% { top: -10%; } 100% { top: 110%; } 
+      }
 
       body.war-mode-active {
         background-color: #0f0202 !important;
-        color: #fca5a5 !important;
-      }
-
-      body.war-mode-active::before {
-        content: "";
-        position: fixed;
-        top: -50%; left: -50%; width: 200%; height: 200%;
-        z-index: -1;
-        opacity: 0.08;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Ctext x='50%25' y='50%25' font-family='monospace' font-weight='bold' font-size='24' fill='%23ff0000' transform='rotate(-45 150 150)' text-anchor='middle'%3EEMERGENCY PROTOCOL // WAR //%3C/text%3E%3C/svg%3E");
-        background-repeat: repeat;
-        animation: bg-scroll 60s linear infinite;
-        pointer-events: none;
-      }
-
-      body.war-mode-active::after {
-        content: "";
-        position: fixed;
-        top: 0; left: 0; right: 0; bottom: 0;
-        z-index: 45;
-        pointer-events: none;
-        box-shadow: inset 0 0 100px rgba(185, 28, 28, 0.4);
-        animation: red-pulse 3s ease-in-out infinite;
-        mix-blend-mode: overlay;
-      }
-
-      .war-mode-active .border-terminal-green,
-      .war-mode-active .border-green-600,
-      .war-mode-active .border-current {
-        border-color: #ef4444 !important;
-        box-shadow: 0 0 8px rgba(239, 68, 68, 0.3) !important;
-        animation: border-flicker 4s infinite;
-      }
-
-      .war-mode-active .text-terminal-green,
-      .war-mode-active .text-green-400,
-      .war-mode-active .text-green-500 {
         color: #ef4444 !important;
-        text-shadow: 0 0 2px rgba(220, 38, 38, 0.5) !important;
       }
-
-      .war-mode-active .bg-terminal-green {
-        background-color: #ef4444 !important;
-        color: #000 !important;
-      }
-
-      .war-mode-active .crt-scanning-line {
-        background: linear-gradient(to bottom, transparent, rgba(255, 0, 0, 0.4), transparent);
-        height: 6px;
-      }
-
-      .war-mode-active #root {
-        animation: red-alert-pulse 3s ease-in-out infinite;
-        transform: none !important;
-        filter: none !important;
-      }
-
-      /* Animations */
-      @keyframes bg-scroll { 0% { transform: translateY(0); } 100% { transform: translateY(150px); } }
-      @keyframes red-pulse { 0% { box-shadow: inset 0 0 50px rgba(185, 28, 28, 0.3); opacity: 0.8; } 50% { box-shadow: inset 0 0 100px rgba(220, 38, 38, 0.5); opacity: 1; } 100% { box-shadow: inset 0 0 50px rgba(185, 28, 28, 0.3); opacity: 0.8; } }
-      @keyframes border-flicker { 0%, 96%, 98% { border-color: #ef4444; opacity: 1; } 97% { border-color: #7f1d1d; opacity: 0.8; } 99% { border-color: #fff; opacity: 1; } }
-
-      @keyframes flicker { 0% { opacity: 0.98; } 50% { opacity: 1; } 100% { opacity: 0.99; } }
-      @keyframes scanline-move { 0% { top: -10%; opacity: 0; } 5% { opacity: 0.5; } 90% { opacity: 0.5; } 100% { top: 110%; opacity: 0; } }
       
-      /* [优化] 增强版形变动画：拉伸(Scale)幅度更大，扭曲(Skew)角度更大 */
-      @keyframes screen-warp { 
-        0% { transform: scale(1) skew(0deg); } 
-        
-        /* 增加随机的小幅抖动 */
-        30% { transform: scale(1.005, 0.995) skew(0.5deg); }
-        60% { transform: scale(0.995, 1.005) skew(-0.5deg); }
-        
-        /* 结尾的大幅扭曲 */
-        90% { transform: scale(1) skew(0deg); } 
-        91% { transform: scale(1.04, 0.96) skew(3deg); } /* 拉伸更宽，倾斜更大 */
-        92% { transform: scale(0.96, 1.04) skew(-3deg); } 
-        93% { transform: scale(1.02, 0.98) skew(2deg); } 
-        94% { transform: scale(0.98, 1.02) skew(-2deg); }
-        95% { transform: scale(1.01, 0.99) skew(1deg); } 
-        100% { transform: scale(1) skew(0deg); } 
+      body.war-mode-active .text-terminal-green { color: #ef4444 !important; }
+      body.war-mode-active .border-terminal-green { border-color: #7f1d1d !important; }
+      body.war-mode-active .bg-terminal-green { background-color: #ef4444 !important; }
+      
+      body.war-mode-active .crt-mode #root {
+        box-shadow: inset 0 0 100px rgba(50,0,0,0.9);
+        background: radial-gradient(circle at center, #1a0505 0%, #000 130%);
       }
 
-      /* [优化] 极轻微的色差，仅在标题使用，避免正文模糊 */
-      @keyframes chromatic { 
-        0% { text-shadow: 0.5px 0 0 rgba(255,0,0,0.2), -0.5px 0 0 rgba(0,0,255,0.2); } 
-        100% { text-shadow: -0.5px 0 0 rgba(255,0,0,0.2), 0.5px 0 0 rgba(0,0,255,0.2); } 
-      }
-
-      ::-webkit-scrollbar { width: 8px; }
-      ::-webkit-scrollbar-track { background: #001100; }
-      ::-webkit-scrollbar-thumb { background: #005500; }
-      .war-mode-active ::-webkit-scrollbar-track { background: #1a0505; }
-      .war-mode-active ::-webkit-scrollbar-thumb { background: #7f1d1d; }
+      ::-webkit-scrollbar { width: 4px; height: 4px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: #004400; border-radius: 2px; }
+      body.war-mode-active ::-webkit-scrollbar-thumb { background: #440000; }
     </style>
     <script type="importmap">
     {
@@ -231,9 +163,9 @@
       }
     }
     </script>
-  <script type="module" crossorigin src="./assets/index-BaOTHmpJ.js"></script>
-</head>
-<body>
+    <script type="module" crossorigin src="./assets/index-qz8U5K4i.js"></script>
+  </head>
+  <body>
     <div id="root"></div>
-</body>
+  </body>
 </html>
