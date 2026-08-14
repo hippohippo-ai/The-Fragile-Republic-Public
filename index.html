@@ -24,8 +24,8 @@
             colors: {
               terminal: {
                 black: '#0a0a0a',
-                green: '#00ff41',
-                dimGreen: '#008f11',
+                green: '#00ff66',
+                dimGreen: '#00cc44',
                 red: '#ff0000',
                 amber: '#ffb000',
               }
@@ -79,76 +79,53 @@
         padding-bottom: env(safe-area-inset-bottom, 20px);
       }
 
-      /* --- CRT 视觉风格 --- */
+      /* --- 经典终端：锐利清晰字芯 + 克制微光 --- */
       .crt-mode {
-        text-shadow: 0 0 2px rgba(0, 255, 65, 0.4);
+        text-shadow: 0 0 1.5px rgba(0, 255, 65, 0.45);
+        -webkit-font-smoothing: antialiased;
       }
 
+      .text-terminal-green { color: #00ff66 !important; }
+      .text-terminal-dimGreen { color: #00bb44 !important; }
+      .text-shadow-none { text-shadow: none !important; }
+
+      /* WebGL 显像管层置底，UI 浮于其上 */
       .crt-mode #root {
-        background: radial-gradient(circle at center, #111 0%, #000 130%);
-        box-shadow: inset 0 0 80px rgba(0,0,0,0.9);
-        animation: flicker 0.15s infinite;
+        background: transparent !important;
         position: relative;
-        z-index: 1;
+        z-index: 10;
       }
 
-      .crt-scanlines {
-        background: linear-gradient(
-          to bottom,
-          rgba(255,255,255,0),
-          rgba(255,255,255,0) 50%,
-          rgba(0,0,0,0.15) 50%,
-          rgba(0,0,0,0.15)
-        );
-        background-size: 100% 4px;
-        position: fixed;
-        pointer-events: none;
-        top: 0; left: 0; right: 0; bottom: 0;
-        z-index: 99;
-        mix-blend-mode: overlay;
+      /* 干净利落的卡片边框 */
+      .crt-mode .border-terminal-green {
+        border-color: rgba(0, 255, 102, 0.45) !important;
+        box-shadow: 0 0 8px rgba(0, 255, 102, 0.15) !important;
       }
 
-      .crt-scanning-line {
-        position: fixed;
-        top: 0; left: 0; width: 100%; height: 4px;
-        background: rgba(0, 255, 65, 0.3);
-        opacity: 0.1;
-        animation: scanline-move 6s linear infinite;
-        pointer-events: none;
-        z-index: 100;
-        box-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+      .crt-mode .bg-terminal-black {
+        background-color: rgba(10, 10, 10, 0.85) !important;
+        backdrop-filter: blur(8px);
       }
 
-      .crt-vignette {
-        position: fixed;
-        top: 0; left: 0; right: 0; bottom: 0;
-        z-index: 98;
-        background: radial-gradient(circle, rgba(0,0,0,0) 60%, rgba(0,0,0,0.5) 100%);
-        pointer-events: none;
+      body.war-mode-active .crt-mode {
+        text-shadow: 0 0 3px rgba(255, 0, 0, 0.6), 0 0 8px rgba(255, 0, 0, 0.3);
       }
 
-      @keyframes flicker { 
-        0% { opacity: 0.97; } 50% { opacity: 1; } 100% { opacity: 0.98; } 
-      }
-      
-      @keyframes scanline-move { 
-        0% { top: -10%; } 100% { top: 110%; } 
+      body.war-mode-active .crt-mode .border-terminal-green,
+      body.war-mode-active .border-red-600 {
+        border-color: rgba(239, 68, 68, 0.5) !important;
+        box-shadow: 0 0 20px rgba(239, 68, 68, 0.25), inset 0 0 12px rgba(239, 68, 68, 0.1) !important;
       }
 
       body.war-mode-active {
         background-color: #0f0202 !important;
         color: #ef4444 !important;
       }
-      
+
       body.war-mode-active .text-terminal-green { color: #ef4444 !important; }
       body.war-mode-active .border-terminal-green { border-color: #7f1d1d !important; }
       body.war-mode-active .bg-terminal-green { background-color: #ef4444 !important; }
       
-      body.war-mode-active .crt-mode #root {
-        box-shadow: inset 0 0 100px rgba(50,0,0,0.9);
-        background: radial-gradient(circle at center, #1a0505 0%, #000 130%);
-      }
-
       ::-webkit-scrollbar { width: 4px; height: 4px; }
       ::-webkit-scrollbar-track { background: transparent; }
       ::-webkit-scrollbar-thumb { background: #004400; border-radius: 2px; }
@@ -163,7 +140,7 @@
       }
     }
     </script>
-    <script type="module" crossorigin src="./assets/index-ByD5QPa5.js"></script>
+    <script type="module" crossorigin src="./assets/index-Bm7xINU_.js"></script>
   </head>
   <body>
     <div id="root"></div>
