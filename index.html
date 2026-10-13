@@ -130,6 +130,28 @@
       ::-webkit-scrollbar-track { background: transparent; }
       ::-webkit-scrollbar-thumb { background: #004400; border-radius: 2px; }
       body.war-mode-active ::-webkit-scrollbar-thumb { background: #440000; }
+
+      /* --- 移动端底部抽屉动效 --- */
+      @keyframes slide-up {
+        from { transform: translateY(100%); opacity: 0.6; }
+        to { transform: translateY(0); opacity: 1; }
+      }
+      @keyframes fade-in {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      @keyframes slide-in {
+        from { transform: translateX(24px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+      @keyframes scale-in {
+        from { transform: scale(0.96); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+      }
+      .animate-slide-up { animation: slide-up 0.28s ease-out; }
+      .animate-fade-in { animation: fade-in 0.25s ease-out; }
+      .animate-slide-in { animation: slide-in 0.3s ease-out; }
+      .animate-scale-in { animation: scale-in 0.3s ease-out; }
     </style>
     <script type="importmap">
     {
@@ -140,7 +162,7 @@
       }
     }
     </script>
-    <script type="module" crossorigin src="./assets/index-CGPQB-xb.js"></script>
+    <script type="module" crossorigin src="./assets/index-B3dzXuyP.js"></script>
   </head>
   <body>
     <div id="root"></div>
