@@ -25,7 +25,7 @@
               terminal: {
                 black: '#0a0a0a',
                 green: '#00ff66',
-                dimGreen: '#00cc44',
+                dimGreen: '#00bb44',
                 red: '#ff0000',
                 amber: '#ffb000',
               }
@@ -92,8 +92,11 @@
         -webkit-font-smoothing: antialiased;
       }
 
-      .text-terminal-green { color: #00ff66 !important; }
-      .text-terminal-dimGreen { color: #00bb44 !important; }
+      /* 注意：这里刻意不用 !important。Play CDN 生成的 hover:/active:/group-hover: 变色
+         是普通声明，一旦基色加 !important，所有悬停反白（hover:text-black 等）全站失效，
+         会出现绿字压绿底。战争模式的覆盖规则自带 !important，不受影响。 */
+      .text-terminal-green { color: #00ff66; }
+      .text-terminal-dimGreen { color: #00bb44; }
       .text-shadow-none { text-shadow: none !important; }
 
       /* WebGL 显像管层置底，UI 浮于其上 */
@@ -169,7 +172,7 @@
       }
     }
     </script>
-    <script type="module" crossorigin src="./assets/index--aMM6PbS.js"></script>
+    <script type="module" crossorigin src="./assets/index-DaqTT3Fs.js"></script>
   </head>
   <body>
     <div id="root"></div>
