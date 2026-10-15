@@ -5,45 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>易碎品 (The Fragile Republic)</title>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Share+Tech+Mono&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+    <!-- 本地化说明（离线化 / Tauri）：Tailwind 改走 @tailwindcss/vite 本地构建（见 src/index.css），
+      React 改走 Vite node_modules 打包，字体改走 @fontsource 自托管。此处不再引用任何 CDN，
+      保证 Tauri exe 无网可玩。 -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏛️</text></svg>">
-
-
-
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              mono: ['"Share Tech Mono"', '"Courier Prime"', '"Noto Sans SC"', 'monospace'],
-              serif: ['"Courier Prime"', '"Noto Sans SC"', 'serif'],
-            },
-            colors: {
-              terminal: {
-                black: '#0a0a0a',
-                green: '#00ff66',
-                dimGreen: '#00bb44',
-                red: '#ff0000',
-                amber: '#ffb000',
-              }
-            },
-            animation: {
-              'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-              'marquee': 'marquee 40s linear infinite',
-            },
-            keyframes: {
-              marquee: {
-                '0%': { transform: 'translateX(0)' },
-                '100%': { transform: 'translateX(-50%)' },
-              }
-            }
-          },
-        },
-      }
-    </script>
     <style>
       /* --- 基础设置 --- */
       html {
@@ -163,16 +128,8 @@
       .animate-slide-in { animation: slide-in 0.3s ease-out; }
       .animate-scale-in { animation: scale-in 0.3s ease-out; }
     </style>
-    <script type="importmap">
-    {
-      "imports": {
-        "react": "https://aistudiocdn.com/react@^19.2.0",
-        "react-dom/client": "https://aistudiocdn.com/react-dom@^19.2.0/client",
-        "react/": "https://aistudiocdn.com/react@^19.2.0/"
-      }
-    }
-    </script>
-    <script type="module" crossorigin src="./assets/index-Chl1G45D.js"></script>
+    <script type="module" crossorigin src="./assets/index-Do3-xFZx.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-CT23NiSy.css">
   </head>
   <body>
     <div id="root"></div>
