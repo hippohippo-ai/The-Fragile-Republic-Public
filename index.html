@@ -43,9 +43,8 @@
         mask-image: linear-gradient(to right, black 85%, transparent 100%);
       }
 
-      /* 浮层底部锚点：底栏 48px + 新闻条 28px = 76px，再叠安全区（无刘海设备 env=0，无影响） */
-      .overlay-bottom { bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
-      .overlay-bottom-sm { bottom: calc(84px + env(safe-area-inset-bottom, 0px)); }
+      /* 浮层底部锚点已搬到 src/index.css：底条 76px 等数值唯一来源是
+         services/display.ts（CHROME_*，经 CSS 变量下发），安全区 env 照常叠加。 */
       .safe-bottom-pad { padding-bottom: env(safe-area-inset-bottom, 0px); }
       .pb-safe {
         padding-bottom: env(safe-area-inset-bottom, 20px);
@@ -128,8 +127,8 @@
       .animate-slide-in { animation: slide-in 0.3s ease-out; }
       .animate-scale-in { animation: scale-in 0.3s ease-out; }
     </style>
-    <script type="module" crossorigin src="./assets/index-Do3-xFZx.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-CT23NiSy.css">
+    <script type="module" crossorigin src="./assets/index-BFEWEicC.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-CgHOn6UN.css">
   </head>
   <body>
     <div id="root"></div>
